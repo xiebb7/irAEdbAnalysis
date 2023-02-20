@@ -1,0 +1,15 @@
+Package: irAEdbAnalysis
+Type: Package
+Title: The analysis pipeline of irAEdb
+Version: 1.0
+Author: Bingbing xie, Wenjia Li
+Maintainer: Bingbing Xie <xie_bingbing@gzlab.ac.cn>
+Description: Need to add
+License: GPL (>= 2)
+Encoding: UTF-8
+LazyData: true
+Depends: R(>= 3.5.0)
+Imports:
+  Seurat
+Collate: 'scRNA.R'
+RoxygenNote: 7.2.0
