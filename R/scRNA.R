@@ -1,6 +1,6 @@
 #' seurat_pipeline method
 #'
-#' @param mat_data A gene-cell matrix of single cell expression data.
+#' @param input_data A gene-cell matrix or unprocessed Seurat object of single cell expression data.
 #' @param min.cells Include features detected in at least this many cells. Will subset the counts matrix as well. To reintroduce excluded features, create a new object with a lower cutoff. Default: 0.
 #' @param min.features Include cells where at least this many features are detected. Default: 0.
 #' @param normalization.method Method for normalization. Default: LogNormalize.
@@ -17,6 +17,8 @@
 #' @param resolution Value of the resolution parameter, use a value above (below) 1.0 if you want to obtain a larger (smaller) number of communities. Default: 0.8.
 #' @param n.neighbors This determines the number of neighboring points used in local approximations of manifold structure. Larger values will result in more global structure being preserved at the loss of detailed local structure. In general this parameter should often be in the range 5 to 50.
 #' @param min.dist This controls how tightly the embedding is allowed compress points together. Larger values ensure embedded points are moreevenly distributed, while smaller values allow the algorithm to optimise more accurately with regard to local structure. Sensible values are in the range 0.001 to 0.5.
+#' @param qc Whether filter cells by gene number and mito ratio.
+#' @param mad The fold multiple standard deviation of gene number to calculate max gene number of cell, Default: 2.
 #'
 #' @return The processed Seurat object.
 #'
@@ -25,7 +27,7 @@
 #' @export
 #'
 #'
-seurat_pipeline = function(mat_data,
+seurat_pipeline = function(input_data,
                            min.cells = 0,
                            min.features = 0,
                            normalization.method = 'LogNormalize',
@@ -41,12 +43,27 @@ seurat_pipeline = function(mat_data,
                            dims = 1:35,
                            resolution = 0.8,
                            n.neighbors = 30,
-                           min.dist = 0.3
+                           min.dist = 0.3,
+                           qc = TRUE,
+                           mad = 2
                            ){
 
-  object = CreateSeuratObject(mat_data,
-                              min.cells = min.cells,
-                              min.features = min.features)
+  if(class(node_velocity) == 'Seurat'){
+    object = input_data
+  }else{
+    object = CreateSeuratObject(input_data,
+                                min.cells = min.cells,
+                                min.features = min.features)
+  }
+
+  if(qc){
+
+    nFeature_highthresholds = mean(object$nFeature_RNA) + mad * sd(object$nFeature_RNA)
+    object[["percent.mt"]] = PercentageFeatureSet(object, pattern = "^MT-|^mt-")
+    object = subset(object, subset = nFeature_RNA > 200 & nFeature_RNA < nFeature_highthresholds & percent.mt < 10)
+
+  }
+
 
   object = NormalizeData(object,
                          normalization.method = normalization.method,

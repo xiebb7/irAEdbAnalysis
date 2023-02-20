@@ -5,7 +5,7 @@
 \title{seurat_pipeline method}
 \usage{
 seurat_pipeline(
-  mat_data,
+  input_data,
   min.cells = 0,
   min.features = 0,
   normalization.method = "LogNormalize",
@@ -21,11 +21,13 @@ seurat_pipeline(
   dims = 1:35,
   resolution = 0.8,
   n.neighbors = 30,
-  min.dist = 0.3
+  min.dist = 0.3,
+  qc = TRUE,
+  mad = 2
 )
 }
 \arguments{
-\item{mat_data}{A gene-cell matrix of single cell expression data.}
+\item{input_data}{A gene-cell matrix or unprocessed Seurat object of single cell expression data.}
 
 \item{min.cells}{Include features detected in at least this many cells. Will subset the counts matrix as well. To reintroduce excluded features, create a new object with a lower cutoff. Default: 0.}
 
@@ -58,6 +60,10 @@ seurat_pipeline(
 \item{n.neighbors}{This determines the number of neighboring points used in local approximations of manifold structure. Larger values will result in more global structure being preserved at the loss of detailed local structure. In general this parameter should often be in the range 5 to 50.}
 
 \item{min.dist}{This controls how tightly the embedding is allowed compress points together. Larger values ensure embedded points are moreevenly distributed, while smaller values allow the algorithm to optimise more accurately with regard to local structure. Sensible values are in the range 0.001 to 0.5.}
+
+\item{qc}{Whether filter cells by gene number and mito ratio.}
+
+\item{mad}{The fold multiple standard deviation of gene number to calculate max gene number of cell, Default: 2.}
 }
 \value{
 The processed Seurat object.
