@@ -60,7 +60,7 @@ seurat_pipeline(
 \item{min.dist}{This controls how tightly the embedding is allowed compress points together. Larger values ensure embedded points are moreevenly distributed, while smaller values allow the algorithm to optimise more accurately with regard to local structure. Sensible values are in the range 0.001 to 0.5.}
 }
 \value{
-The predict cell type.
+The processed Seurat object.
 }
 \description{
 seurat_pipeline method

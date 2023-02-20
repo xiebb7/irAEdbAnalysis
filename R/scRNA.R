@@ -18,7 +18,7 @@
 #' @param n.neighbors This determines the number of neighboring points used in local approximations of manifold structure. Larger values will result in more global structure being preserved at the loss of detailed local structure. In general this parameter should often be in the range 5 to 50.
 #' @param min.dist This controls how tightly the embedding is allowed compress points together. Larger values ensure embedded points are moreevenly distributed, while smaller values allow the algorithm to optimise more accurately with regard to local structure. Sensible values are in the range 0.001 to 0.5.
 #'
-#' @return The predict cell type.
+#' @return The processed Seurat object.
 #'
 #' @importFrom Seurat CreateSeuratObject NormalizeData FindVariableFeatures ScaleData GetAssayData RunPCA FindNeighbors FindClusters RunUMAP
 #'
