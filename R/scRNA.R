@@ -48,7 +48,7 @@ seurat_pipeline = function(input_data,
                            mad = 2
                            ){
 
-  if(class(node_velocity) == 'Seurat'){
+  if(class(input_data) == 'Seurat'){
     object = input_data
   }else{
     object = CreateSeuratObject(input_data,
