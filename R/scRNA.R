@@ -12,13 +12,15 @@
 #' @param features Vector of features names to scale/center. Default is variable features. Default: NULL.
 #' @param vars.to.regress Variables to regress out (previously latent.vars in RegressOut). For example, nUMI, or percent.mito. Default: NULL.
 #' @param npcs Total Number of PCs to compute and store (50 by default).
-#' @param k.param Defines k for the k-nearest neighbor algorithm. Default: 20.
+#' @param k.param Defines k for the k-nearest neighbor algorithm. Default: 50.
 #' @param dims Dimensions of reduction to use as input. Default: 1:10.
 #' @param resolution Value of the resolution parameter, use a value above (below) 1.0 if you want to obtain a larger (smaller) number of communities. Default: 0.8.
 #' @param n.neighbors This determines the number of neighboring points used in local approximations of manifold structure. Larger values will result in more global structure being preserved at the loss of detailed local structure. In general this parameter should often be in the range 5 to 50.
 #' @param min.dist This controls how tightly the embedding is allowed compress points together. Larger values ensure embedded points are moreevenly distributed, while smaller values allow the algorithm to optimise more accurately with regard to local structure. Sensible values are in the range 0.001 to 0.5.
 #' @param qc Whether filter cells by gene number and mito ratio.
 #' @param mad The fold multiple standard deviation of gene number to calculate max gene number of cell, Default: 2.
+#' @param min.gene The minimal gene number of cell, Default:500.
+#' @param mt.rate The threshold of mt gene expression, Default:10.
 #'
 #' @return The processed Seurat object.
 #'
@@ -39,13 +41,15 @@ seurat_pipeline = function(input_data,
                            features = NULL,
                            vars.to.regress = NULL,
                            npcs = 50,
-                           k.param = 20,
+                           k.param = 50,
                            dims = 1:35,
                            resolution = 0.8,
                            n.neighbors = 30,
                            min.dist = 0.3,
                            qc = TRUE,
-                           mad = 2
+                           mad = 2,
+                           min.gene = 500,
+                           mt.rate = 10
                            ){
 
   if(class(input_data) == 'Seurat'){
@@ -60,7 +64,7 @@ seurat_pipeline = function(input_data,
 
     nFeature_highthresholds = mean(object$nFeature_RNA) + mad * sd(object$nFeature_RNA)
     object[["percent.mt"]] = PercentageFeatureSet(object, pattern = "^MT-|^mt-")
-    object = subset(object, subset = nFeature_RNA > 200 & nFeature_RNA < nFeature_highthresholds & percent.mt < 10)
+    object = subset(object, subset = nFeature_RNA > min.gene & nFeature_RNA < nFeature_highthresholds & percent.mt < mt.rate)
 
   }
 

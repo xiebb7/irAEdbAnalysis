@@ -17,13 +17,15 @@ seurat_pipeline(
   features = NULL,
   vars.to.regress = NULL,
   npcs = 50,
-  k.param = 20,
+  k.param = 50,
   dims = 1:35,
   resolution = 0.8,
   n.neighbors = 30,
   min.dist = 0.3,
   qc = TRUE,
-  mad = 2
+  mad = 2,
+  min.gene = 500,
+  mt.rate = 10
 )
 }
 \arguments{
@@ -64,6 +66,10 @@ seurat_pipeline(
 \item{qc}{Whether filter cells by gene number and mito ratio.}
 
 \item{mad}{The fold multiple standard deviation of gene number to calculate max gene number of cell, Default: 2.}
+
+\item{min.gene}{The minimal gene number of cell, Default:500.}
+
+\item{mt.rate}{The threshold of mt gene expression, Default:10.}
 }
 \value{
 The processed Seurat object.
