@@ -24,7 +24,7 @@
 #'
 #' @return The processed Seurat object.
 #'
-#' @importFrom Seurat CreateSeuratObject NormalizeData FindVariableFeatures ScaleData GetAssayData RunPCA FindNeighbors FindClusters RunUMAP
+#' @import Seurat
 #'
 #' @export
 #'
@@ -379,6 +379,21 @@ reference_mapping = function(object,
   )
 
   return(object)
+
+}
+
+#' load R object and assign new name.
+#'
+#' @param fileName File path of RData.
+#'
+#' @return R object.
+#'
+#' @export
+#'
+loadRData = function(fileName){
+
+  load(fileName)
+  get(ls()[ls() != "fileName"])
 
 }
 
