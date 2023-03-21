@@ -168,7 +168,7 @@ batch_correct_pipeline = function(object_list,
 
   if(method == 'seurat'){
 
-    object_list = lapply(object_list, FUN = function(x) {
+    object_list = lapply(object_list, function(x) {
 
       x = NormalizeData(x,
                         normalization.method = normalization.method,
@@ -340,8 +340,47 @@ batch_correct_pipeline = function(object_list,
 
 }
 
+#' Automatic celltype annotation through reference mapping
+#'
+#' @param object A seurat object needs to be annotated.
+#' @param reference A reference seurat object containing celltype info.
+#'
+#' @return The annotated Seurat object.
+#'
+#' @import SeuratDisk Seurat
+#'
+#' @export
+#'
+#'
+reference_mapping = function(object,
+                             reference){
 
+  object = SCTransform(object, verbose = FALSE)
 
+  anchors = FindTransferAnchors(
+    reference = reference,
+    query = object,
+    normalization.method = "SCT",
+    reference.reduction = "spca",
+    dims = 1:50
+  )
+
+  object = MapQuery(
+    anchorset = anchors,
+    query = object,
+    reference = reference,
+    refdata = list(
+      celltype.l1 = "celltype.l1",
+      celltype.l2 = "celltype.l2",
+      predicted_ADT = "ADT"
+    ),
+    reference.reduction = "spca",
+    reduction.model = "wnn.umap"
+  )
+
+  return(object)
+
+}
 
 
 
